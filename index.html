@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dolphin Digital Group · Legal Portal</title>
+  <meta name="description" content="Centralized legal portal for Dolphin Digital Group and subsidiaries." />
+  <link rel="icon" href="./DDG-Legal-Favicon.png" />
+  <style>
+    :root{
+      --bg:#0b0c0f;          /* deep charcoal */
+      --panel:#12141a;       /* slightly lighter panel */
+      --muted:#8b93a5;       /* muted text */
+      --text:#e9edf5;        /* main text */
+      --accent:#238779;      /* Omnia Green (close): 35,135,121 */
+      --accent-2:#ff8700;    /* Omnia Orange */
+      --border:#202534;      /* hairline borders */
+      --ok:#2bb673;
+      --warn:#ffb020;
+      --danger:#ef476f;
+      --radius-xl:1.25rem;
+      --radius-lg:1rem;
+      --radius-md:.75rem;
+      --shadow: 0 10px 30px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.25);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(35,135,121,.25), transparent 60%),
+                  radial-gradient(900px 600px at 10% -20%, rgba(255,135,0,.14), transparent 50%),
+                  var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    header{
+      position:sticky; top:0; z-index:10; backdrop-filter: blur(8px);
+      background: linear-gradient( to bottom, rgba(11,12,15,.9), rgba(11,12,15,.65));
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap{max-width:1200px; margin-inline:auto; padding: 20px;}
+    .brand{
+      display:flex; align-items:center; gap:14px;
+    }
+    .logo{
+      width:44px; height:44px; display:grid; place-items:center; border-radius:16px;
+      background: conic-gradient(from 140deg, var(--accent), var(--accent-2));
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.08), var(--shadow);
+    }
+    .logo svg{filter: drop-shadow(0 1px 4px rgba(0,0,0,.4));}
+    .title h1{margin:0; font-size: clamp(20px, 2.2vw, 28px); letter-spacing:.3px}
+    .title p{margin:2px 0 0; color:var(--muted); font-size:14px}
+
+    .toolbar{
+      margin-top:18px; display:grid; grid-template-columns: 1fr; gap:12px;
+    }
+    @media (min-width: 860px){
+      .toolbar{grid-template-columns: 2fr 1fr 1fr;}
+    }
+    .search{display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:10px 12px; box-shadow: var(--shadow)}
+    .search input{flex:1; background:transparent; border:0; color:var(--text); outline:none; font-size:15px}
+    .select, .chipbar{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:10px; box-shadow: var(--shadow)}
+    select{width:100%; background:transparent; color:var(--text); border:0; outline:none; font-size:15px}
+
+    .chips{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{padding:8px 12px; border:1px solid var(--border); border-radius:999px; cursor:pointer; font-size:13px; color:var(--muted); background:#0f1116}
+    .chip[data-active="true"]{color:#fff; border-color: rgba(255,255,255,.16); background: linear-gradient(180deg, rgba(35,135,121,.35), rgba(35,135,121,.18))}
+
+    main{padding: 24px 20px 60px}
+    .sections{display:grid; gap:26px}
+    .section h2{margin:0 0 8px; font-size:18px; color:#fff}
+    .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:16px}
+
+    .card{
+      background: linear-gradient(180deg, #12141a, #0f1217);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding:16px; display:flex; flex-direction:column; gap:10px; box-shadow: var(--shadow);
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .card:hover{transform: translateY(-2px); border-color: rgba(255,255,255,.24)}
+    .badge{display:inline-flex; align-items:center; gap:8px; font-size:12px; color:#dce7f6; background:rgba(35,135,121,.18); border:1px solid rgba(35,135,121,.35); padding:6px 10px; border-radius:999px}
+    .meta{display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:12px}
+    .title-row{display:flex; gap:10px; align-items:center; justify-content:space-between}
+    .title-row h3{margin:0; font-size:16px}
+    .status{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--border); color:#fff}
+    .status.published{background: rgba(43,182,115,.18); border-color: rgba(43,182,115,.4)}
+    .status.draft{background: rgba(255,176,32,.14); border-color: rgba(255,176,32,.5)}
+    .status.archived{background: rgba(239,71,111,.14); border-color: rgba(239,71,111,.45)}
+    .actions{display:flex; gap:10px; margin-top:auto}
+    .btn{display:inline-flex; gap:8px; align-items:center; justify-content:center; padding:10px 12px; border-radius:12px; border:1px solid var(--border); color:#fff; background:#11151b; text-decoration:none}
+    .btn.primary{background: linear-gradient(180deg, rgba(35,135,121,.65), rgba(35,135,121,.35)); border-color: rgba(35,135,121,.55)}
+    .btn.secondary{background: linear-gradient(180deg, rgba(255,135,0,.45), rgba(255,135,0,.25)); border-color: rgba(255,135,0,.45)}
+
+    details.faq{background: var(--panel); border:1px solid var(--border); padding:14px 16px; border-radius:var(--radius-lg)}
+    details.faq summary{cursor:pointer; font-weight:600}
+    details.faq[open]{background:linear-gradient(180deg, rgba(35,135,121,.18), rgba(35,135,121,.08))}
+
+    .subtle{color:var(--muted)}
+    hr{border:0; border-top:1px solid var(--border); margin:24px 0}
+
+    footer{border-top:1px solid var(--border); background:#0b0e12; color:var(--muted)}
+    footer .foot{display:grid; gap:18px}
+    @media (min-width:860px){footer .foot{grid-template-columns: 2fr 1fr 1fr}}
+
+    /* Print-friendly */
+    @media print{
+      header, .toolbar, .actions, .faq-ctr{display:none !important}
+      body{background:#fff; color:#000}
+      .card{break-inside:avoid; box-shadow:none; border-color:#ccc}
+      .badge{border-color:#666; color:#000}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 13c2.5-6.5 11-9 16-6.5-1.5 2-4.5 3-7.5 3.5 3 1 5 3 5 5.5 0 3-3 5.5-7.5 5.5C6.5 21.5 3 18 3 14c0-1 .3-1.8 1-3z" fill="white"/>
+          </svg>
+        </div>
+        <div class="title">
+          <h1>Dolphin Digital Group · Legal Portal</h1>
+          <p>Single source of truth for organization-wide and subsidiary legal documents.</p>
+        </div>
+      </div>
+
+      <div class="toolbar" role="region" aria-label="Filters and search">
+        <div class="search" role="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15.5 15.5l5 5" stroke="currentColor" stroke-width="1.5"/><circle cx="10.5" cy="10.5" r="7.5" stroke="currentColor" stroke-width="1.5"/></svg>
+          <input id="q" type="search" placeholder="Search documents, e.g. Privacy, DPA, DMCA, Brand…" autocomplete="off" />
+        </div>
+        <div class="select">
+          <label for="company" class="subtle" style="display:block; font-size:12px; margin-bottom:6px">Company</label>
+          <select id="company" aria-label="Company filter">
+            <option value="*">All (Group-wide)</option>
+            <option value="Dolphin Digital Group">Dolphin Digital Group (Parent)</option>
+            <option value="Dolphin Networks">Dolphin Networks</option>
+            <option value="PhantomLabs">PhantomLabs</option>
+            <option value="LNS Productions">LNS Productions</option>
+            <option value="The LoveNorSad Company">The LoveNorSad Company</option>
+            <option value="ZenoMedia">ZenoMedia</option>
+          </select>
+        </div>
+        <div class="chipbar">
+          <div class="chips" id="chips" role="listbox" aria-label="Document type filter">
+            <button class="chip" data-type="*" data-active="true">All types</button>
+            <button class="chip" data-type="Privacy Policy">Privacy</button>
+            <button class="chip" data-type="Terms of Service">Terms</button>
+            <button class="chip" data-type="Cookie Policy">Cookie</button>
+            <button class="chip" data-type="Data Processing Addendum">DPA</button>
+            <button class="chip" data-type="Acceptable Use Policy">AUP</button>
+            <button class="chip" data-type="Brand Guidelines">Brand</button>
+            <button class="chip" data-type="Licensing">Licensing</button>
+            <button class="chip" data-type="DMCA Policy">DMCA</button>
+            <button class="chip" data-type="Press Kit">Press Kit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="sections">
+      <section class="section" aria-labelledby="org">
+        <h2 id="org">Organization-wide documents</h2>
+        <p class="subtle">These apply across Dolphin Digital Group and, unless superseded below, all subsidiaries.</p>
+        <div id="grid-org" class="grid" role="list"></div>
+      </section>
+
+      <hr/>
+
+      <section class="section" aria-labelledby="subs">
+        <h2 id="subs">Subsidiary documents</h2>
+        <p class="subtle">Company-specific policies that override or complement the group-wide documents.</p>
+        <div id="grid-sub" class="grid" role="list"></div>
+      </section>
+
+      <section class="section" aria-labelledby="faq">
+        <h2 id="faq">FAQs</h2>
+        <div class="faq-ctr" style="display:grid; gap:10px">
+          <details class="faq">
+            <summary>What’s the difference between group-wide and subsidiary policies?</summary>
+            <div class="subtle" style="margin-top:8px">Group-wide documents set the baseline standards for every company. Subsidiary documents tailor additional terms (e.g., different products, audiences, or jurisdictions). If there is a conflict, subsidiary terms listed here take precedence for that brand.</div>
+          </details>
+          <details class="faq">
+            <summary>How do I request a new document or update?</summary>
+            <div class="subtle" style="margin-top:8px">Create a ticket with Legal Ops and attach context, deadlines, and reviewers. You can also email <a href="mailto:legal@dolphindigital.group">legal@dolphindigital.group</a>. For public policies, propose copy changes and mark risks/impacts.</div>
+          </details>
+          <details class="faq">
+            <summary>Where do I find previous versions?</summary>
+            <div class="subtle" style="margin-top:8px">Each policy page should link to a changelog. Until versioning is live, contact Legal Ops to retrieve archived copies.</div>
+          </details>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <div>
+        <div class="brand" style="margin-bottom:8px">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="title">
+            <strong>Dolphin Digital Group</strong>
+            <div class="subtle">Unified legal portal · v1.0</div>
+          </div>
+        </div>
+        <div class="subtle">© <span id="year"></span> Dolphin Digital Group. This portal is for informational purposes and does not constitute legal advice.</div>
+      </div>
+      <div>
+        <strong>Contacts</strong>
+        <div class="subtle">Legal Ops: <a href="mailto:legal@dolphinnetwork.ie">legal@dolphinnetwork.ie</a></div>
+        <div class="subtle">Privacy: <a href="mailto:privacy@dolphindigital.group">privacy@dolphindigital.group</a></div>
+      </div>
+      <div>
+        <strong>Compliance</strong>
+        <div class="subtle"><a href="#" aria-disabled="true">Record of Processing Activities (ROPA)</a></div>
+        <div class="subtle"><a href="#" aria-disabled="true">Subprocessors</a></div>
+        <div class="subtle"><a href="#" aria-disabled="true">Trust & Security</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // --- Data model:
+    const DOCS = [
+      // Group-wide (Parent)
+      { title: 'Privacy Policy', type: 'Privacy Policy', company: 'Dolphin Digital Group', scope: 'org', url: '/legal/ddg/privacy.html', updated: '2025-09-01', status: 'not-published' },
+      { title: 'Terms of Service', type: 'Terms of Service', company: 'Dolphin Digital Group', scope: 'org', url: '/legal/ddg/terms.html', updated: '2025-09-01', status: 'not-published' },
+      { title: 'Cookie Policy', type: 'Cookie Policy', company: 'Dolphin Digital Group', scope: 'org', url: '/legal/ddg/cookies.html', updated: '2025-08-28', status: 'not-published' },
+      { title: 'Data Processing Addendum (DPA)', type: 'Data Processing Addendum', company: 'Dolphin Digital Group', scope: 'org', url: './ddg/dpa', updated: '2025-09-06', status: 'published' },
+      { title: 'Acceptable Use Policy', type: 'Acceptable Use Policy', company: 'Dolphin Digital Group', scope: 'org', url: '/legal/ddg/aup.html', updated: '2025-08-25', status: 'not-published' },
+      { title: 'DMCA Policy', type: 'DMCA Policy', company: 'Dolphin Digital Group', scope: 'org', url: '/legal/ddg/dmca.html', updated: '2025-08-25', status: 'not-published' },
+      { title: 'Brand Guidelines', type: 'Brand Guidelines', company: 'Dolphin Digital Group', scope: 'org', url: '/legal/ddg/brand.html', updated: '2025-08-20', status: 'not-published' },
+      { title: 'Licensing Overview', type: 'Licensing', company: 'Dolphin Digital Group', scope: 'org', url: '/legal/ddg/licensing.html', updated: '2025-08-18', status: 'not-published' },
+      { title: 'Press Kit', type: 'Press Kit', company: 'Dolphin Digital Group', scope: 'org', url: '/press/ddg/', updated: '2025-08-12', status: 'not-published' },
+
+      // Subsidiaries
+      { title: 'Privacy Policy', type: 'Privacy Policy', company: 'Dolphin Networks', scope: 'sub', url: '/legal/dolphin-networks/privacy.html', updated: '2025-08-31', status: 'published' },
+      { title: 'Terms of Service', type: 'Terms of Service', company: 'Dolphin Networks', scope: 'sub', url: '/legal/dolphin-networks/terms.html', updated: '2025-08-31', status: 'published' },
+
+      { title: 'Privacy Policy', type: 'Privacy Policy', company: 'PhantomLabs', scope: 'sub', url: '/legal/phantomlabs/privacy.html', updated: '2025-08-27', status: 'published' },
+      { title: 'Terms of Service', type: 'Terms of Service', company: 'PhantomLabs', scope: 'sub', url: '/legal/phantomlabs/terms.html', updated: '2025-08-27', status: 'published' },
+      { title: 'Brand Guidelines', type: 'Brand Guidelines', company: 'PhantomLabs', scope: 'sub', url: '/legal/phantomlabs/brand.html', updated: '2025-08-20', status: 'draft' },
+
+      { title: 'Privacy Policy', type: 'Privacy Policy', company: 'LNS Productions', scope: 'sub', url: '/legal/lns/privacy.html', updated: '2025-08-28', status: 'published' },
+      { title: 'Terms of Service', type: 'Terms of Service', company: 'LNS Productions', scope: 'sub', url: '/legal/lns/terms.html', updated: '2025-08-28', status: 'published' },
+      { title: 'Press Kit', type: 'Press Kit', company: 'LNS Productions', scope: 'sub', url: '/press/lns/', updated: '2025-08-15', status: 'published' },
+
+      { title: 'Privacy Policy', type: 'Privacy Policy', company: 'The LoveNorSad Company', scope: 'sub', url: '/legal/lovenorsad/privacy.html', updated: '2025-08-29', status: 'published' },
+      { title: 'Terms of Service', type: 'Terms of Service', company: 'The LoveNorSad Company', scope: 'sub', url: '/legal/lovenorsad/terms.html', updated: '2025-08-29', status: 'published' },
+      { title: 'Brand Guidelines', type: 'Brand Guidelines', company: 'The LoveNorSad Company', scope: 'sub', url: '/legal/lovenorsad/brand.html', updated: '2025-08-18', status: 'published' },
+
+      { title: 'Privacy Policy', type: 'Privacy Policy', company: 'ZenoMedia', scope: 'sub', url: '/legal/zenomedia/privacy.html', updated: '2025-08-26', status: 'published' },
+      { title: 'Terms of Service', type: 'Terms of Service', company: 'ZenoMedia', scope: 'sub', url: '/legal/zenomedia/terms.html', updated: '2025-08-26', status: 'published' },
+      { title: 'Licensing Overview', type: 'Licensing', company: 'ZenoMedia', scope: 'sub', url: '/legal/zenomedia/licensing.html', updated: '2025-08-22', status: 'draft' },
+    ];
+
+    const q = document.getElementById('q');
+    const company = document.getElementById('company');
+    const chips = document.getElementById('chips');
+    const gridOrg = document.getElementById('grid-org');
+    const gridSub = document.getElementById('grid-sub');
+
+    function formatDate(s){
+      const d = new Date(s + 'T00:00:00');
+      return d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+    }
+
+    function iconFor(type){
+      const map = {
+        'Privacy Policy': 'M12 2l6 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6l6-4z',
+        'Terms of Service': 'M6 2h12v20H6z',
+        'Cookie Policy': 'M12 2a10 10 0 100 20 10 10 0 000-20z',
+        'Data Processing Addendum': 'M4 6h16v4H4zM4 12h10v4H4z',
+        'Acceptable Use Policy': 'M12 2l8 8-8 8-8-8 8-8z',
+        'Brand Guidelines': 'M4 6h16v12H4z',
+        'Licensing': 'M4 4h16v6H4zM4 14h10v6H4z',
+        'DMCA Policy': 'M12 2l5 5-5 5-5-5 5-5z',
+        'Press Kit': 'M4 6h8v12H4zM14 6h6v12h-6z'
+      };
+      return map[type] || 'M4 4h16v16H4z';
+    }
+
+    function statusClass(status){
+      return status === 'published' ? 'published' : status === 'draft' ? 'draft' : 'archived';
+    }
+
+    function makeCard(doc){
+      const el = document.createElement('article');
+      el.className = 'card';
+      el.setAttribute('role','listitem');
+      el.dataset.company = doc.company;
+      el.dataset.type = doc.type;
+      el.dataset.title = doc.title.toLowerCase();
+
+      el.innerHTML = `
+        <span class="badge" title="${doc.company}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${iconFor(doc.type)}"/></svg>
+          ${doc.company}
+        </span>
+        <div class="title-row">
+          <h3>${doc.title}</h3>
+          <span class="status ${statusClass(doc.status)}" title="Status">${doc.status}</span>
+        </div>
+        <div class="meta">
+          <span>Type: ${doc.type}</span>
+          <span>•</span>
+          <span>Updated: ${formatDate(doc.updated)}</span>
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="${doc.url}" aria-label="Open ${doc.title} for ${doc.company}">Open</a>
+          <a class="btn secondary" href="${doc.url.replace('.html','')}/changelog.html" aria-label="View changelog for ${doc.title}" target="_blank" rel="noopener">Changelog</a>
+        </div>
+      `;
+      return el;
+    }
+
+    function render(){
+      gridOrg.innerHTML = '';
+      gridSub.innerHTML = '';
+
+      const text = q.value.trim().toLowerCase();
+      const companyVal = company.value;
+      const activeChip = chips.querySelector('.chip[data-active="true"]');
+      const typeVal = activeChip ? activeChip.dataset.type : '*';
+
+      const filtered = DOCS.filter(d => {
+        const inCompany = companyVal === '*' || d.company === companyVal;
+        const inType = typeVal === '*' || d.type === typeVal;
+        const inText = !text || d.title.toLowerCase().includes(text) || d.type.toLowerCase().includes(text) || d.company.toLowerCase().includes(text);
+        return inCompany && inType && inText;
+      });
+
+      filtered.filter(d => d.scope === 'org').forEach(d => gridOrg.appendChild(makeCard(d)));
+      filtered.filter(d => d.scope === 'sub').forEach(d => gridSub.appendChild(makeCard(d)));
+
+      if(!gridOrg.childElementCount){
+        gridOrg.innerHTML = '<div class="subtle">No matching organization-wide documents.</div>';
+      }
+      if(!gridSub.childElementCount){
+        gridSub.innerHTML = '<div class="subtle">No matching subsidiary documents.</div>';
+      }
+    }
+
+    // Interactions
+    q.addEventListener('input', render);
+    company.addEventListener('change', render);
+    chips.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.chip');
+      if(!btn) return;
+      chips.querySelectorAll('.chip').forEach(c=>c.dataset.active='false');
+      btn.dataset.active = 'true';
+      render();
+    });
+
+    // Initial render
+    render();
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
